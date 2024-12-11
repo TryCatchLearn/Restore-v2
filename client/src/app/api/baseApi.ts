@@ -8,11 +8,11 @@ const customBaseQuery = fetchBaseQuery({
     credentials: 'include'
 });
 
-type ErrorResponse = | string | {title: string} | {errors: string[]};
+type ErrorResponse = | string | { title: string } | { errors: string[] };
 
 const sleep = () => new Promise(resolve => setTimeout(resolve, 1000));
 
-export const baseQueryWithErrorHandling = async (args: string | FetchArgs, api: BaseQueryApi, 
+export const baseQueryWithErrorHandling = async (args: string | FetchArgs, api: BaseQueryApi,
     extraOptions: object) => {
     api.dispatch(startLoading());
     if (import.meta.env.DEV) await sleep();
@@ -39,13 +39,17 @@ export const baseQueryWithErrorHandling = async (args: string | FetchArgs, api: 
                 if (typeof responseData === 'object' && 'title' in responseData)
                     toast.error(responseData.title);
                 break;
+            case 403:
+                if (typeof responseData === 'object')
+                    toast.error('403 Forbidden');
+                break;
             case 404:
                 if (typeof responseData === 'object' && 'title' in responseData)
                     router.navigate('/not-found')
                 break;
             case 500:
                 if (typeof responseData === 'object')
-                    router.navigate('/server-error', {state: {error: responseData}})
+                    router.navigate('/server-error', { state: { error: responseData } })
                 break;
             default:
                 break;
