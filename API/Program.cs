@@ -20,6 +20,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddTransient<ExceptionMiddleware>();
 builder.Services.AddScoped<PaymentsService>();
 builder.Services.AddScoped<ImageService>();
+builder.Services.AddScoped<DiscountService>();
 builder.Services.AddIdentityApiEndpoints<User>(opt =>
 {
     opt.User.RequireUniqueEmail = true;
