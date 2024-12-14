@@ -39,7 +39,7 @@ public class DiscountService
         return null;
     }
 
-    public async Task<long> CalculateDiscountFromAmount(AppCoupon appCoupon, long amount, 
+    public async Task<long> CalculateDiscountFromAmount(AppCoupon appCoupon, long amount,
         bool removeDiscount = false)
     {
         var couponService = new CouponService();
@@ -52,9 +52,7 @@ public class DiscountService
         }
         else if (coupon.PercentOff.HasValue && !removeDiscount)
         {
-            var discount =  (long)(amount * (coupon.PercentOff.Value / 100));
-
-            return discount;
+            return (long)Math.Round(amount * (coupon.PercentOff.Value / 100), MidpointRounding.AwayFromZero);
         }
 
         return 0;

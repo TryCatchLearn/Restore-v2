@@ -89,9 +89,36 @@ export const basketApi = createApi({
                 );
                 Cookies.remove('basketId');
             }
+        }),
+        addCoupon: builder.mutation<Basket, string>({
+            query: (code: string) => ({
+                url: `basket/${code}`,
+                method: 'POST'
+            }),
+            onQueryStarted: async (_, {dispatch, queryFulfilled}) => {
+                const {data: updatedBasket} = await queryFulfilled;
+
+                dispatch(basketApi.util.updateQueryData('fetchBasket', undefined, (draft)=> {
+                    Object.assign(draft, updatedBasket)
+                }))
+            } 
+        }),
+        removeCoupon: builder.mutation<Basket, void>({
+            query: () => ({
+                url: 'basket/remove-coupon',
+                method: 'DELETE'
+            }),
+            onQueryStarted: async (_, {dispatch, queryFulfilled}) => {
+                await queryFulfilled;
+
+                dispatch(basketApi.util.updateQueryData('fetchBasket', undefined, (draft)=> {
+                    draft.coupon = null
+                }))
+            } 
         })
     })
 });
 
 export const { useFetchBasketQuery, useAddBasketItemMutation, 
+    useAddCouponMutation, useRemoveCouponMutation,
     useRemoveBasketItemMutation, useClearBasketMutation } = basketApi;
